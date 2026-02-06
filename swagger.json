@@ -1,0 +1,78 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "version": "1.0.0",
+    "title": "E-Commerce API",
+    "description": "API for E-Commerce application"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  },
+  "paths": {
+    "/api/user/signin": {
+      "post": {
+        "summary": "Login",
+        "tags": ["Login"],
+        "description": "User login to get token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Incorrect Credentials"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "summary": "Get all Products",
+        "tags": ["Products"],
+        "description": "User can see all the products",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  }
+}
