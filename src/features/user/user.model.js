@@ -1,3 +1,4 @@
+import { ApplicationError } from "../../middlewares/applicationError.middleware.js";
 
 export default class UserModel{
     constructor(id,name,email,password,type){
@@ -17,7 +18,10 @@ export default class UserModel{
 
     static signIn(email,password){
         const findUser = users.find(user => user.email == email && user.password == password );
-        return findUser;
+        if(!findUser){
+            throw new ApplicationError("Incorrect Credentials",401)
+        }
+        return findUser;            
     }
 
     static getAll(){
@@ -26,7 +30,7 @@ export default class UserModel{
 
 }
 
-let users = [
+var users = [
     {
     id:1,
     name: "Seller User",

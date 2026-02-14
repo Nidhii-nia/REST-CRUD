@@ -8,11 +8,9 @@ export default class UserController {
     res.status(201).send(user);
   }
 
-  postSignIn(req, res) {
-    const result = UserModel.signIn(req.body.email, req.body.password);
-    if (!result) {
-      return res.status(401).send("Incorrect Credentials");
-    }
+  postSignIn(req, res,next) {
+   try{
+     const result = UserModel.signIn(req.body.email, req.body.password);
     const token = jwt.sign(
       { userId: result.id, email: result.email },
       process.env.SECRET_KEY,
@@ -20,9 +18,12 @@ export default class UserController {
         expiresIn: "1d",
       },
     );
-
     console.log(token);
-
     return res.status(200).send(token);
+   }catch(err){
+    console.log("signIn ERROR");
+    next(err);
+    
+   }
   }
 }

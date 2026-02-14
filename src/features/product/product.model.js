@@ -1,4 +1,5 @@
 import UserModel from "../user/user.model.js";
+import { ApplicationError } from "../../middlewares/applicationError.middleware.js";
 
 export default class ProductModel {
   constructor(id, name, desc, imgUrl, category, price, sizes) {
@@ -50,13 +51,13 @@ export default class ProductModel {
     //1. check if user exists
     const userExists = UserModel.getAll().find(u => u.id == userId);
     if(!userExists){
-      return "User not Found!";
+      throw new ApplicationError("User not Found!",404);
     }
 
     //2. Product exists?
     const productExists = this.get(productId);
     if(!productExists){
-      return "Product does not exist!";
+      throw new ApplicationError("Product does not exist!",404);
     }
 
     //3. Ratings exists?

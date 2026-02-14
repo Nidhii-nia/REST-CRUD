@@ -1,3 +1,4 @@
+import { ApplicationError } from "../../middlewares/applicationError.middleware.js";
 import ProductModel from "../product/product.model.js";
 import UserModel from "../user/user.model.js";
 
@@ -17,10 +18,10 @@ export default class CartModel {
     const user = UserModel.getAll().find((u) => u.id == userId);
     const product = ProductModel.getAll().find((p) => p.id == productId);
     if (!user) {
-      return "User does not exist!";
+     throw new ApplicationError("User does not exist!",404);
     }
     if (!product) {
-      return "Product does not exist!";
+      throw new ApplicationError("Product does not exist!",404);
     }
 
     const userProdIndex = cart.findIndex(
@@ -49,7 +50,7 @@ export default class CartModel {
   static deleteFromCart(userId,id){
     const findId = cart.findIndex(c => c.userId == userId &&c.id == id);
     if(findId === -1){
-        return "Product does not exist";
+        throw new ApplicationError("Product does not exist!",404);
     }
 
     cart.splice(findId,1);

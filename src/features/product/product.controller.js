@@ -52,14 +52,16 @@ export default class ProductController{
         res.status(200).send(product);
     }
 
-    postRateProduct(req,res){
+    postRateProduct(req,res,next){
+        try{
+            
         const {userId,productId,rating} = req.query;
-        const error = ProductModel.rateProducts(userId,productId,rating);
+        ProductModel.rateProducts(userId,productId,rating);
 
-        if(error){
-            res.status(400).send(error);
-        }else{
             res.status(200).send(`Product with id ${productId} rated with ${rating} successfully!`);
+        }catch(err){
+            console.log("Rate cart error");
+            next(err);
         }
     }
 
