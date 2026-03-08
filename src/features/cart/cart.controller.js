@@ -1,34 +1,43 @@
 import CartModel from "./cart.model.js";
+import CartRepository from "./cart.repository.js";
 
 export default class CartController {
-  getCart(req, res) {
-    const cart = CartModel.getAllCartItems();
-    res.status(200).send(cart);
+  constructor() {
+    this.cartRepository = new CartRepository();
   }
 
-  addCart(req, res, next) {
+  getCart = async (req, res) => {
     try {
-      const { productId, quantity } = req.query;
-      const userId = req.userId;
-      CartModel.addTocart(productId, userId, quantity);
+      const cart = await this.cartRepository.getAllCartItems();
+      return res.status(200).send(cart);
+    } catch (err) {
+      return res.status(404).send(err.message);
+    }
+  };
 
-      return res.status(200).send("Product added successfully!");
+  addCart = async (req, res, next) => {
+    try { 
+      const { productId, quantity } = req.body;
+      const userId = req.userId;
+      const item = new CartModel(productId, userId, quantity)
+     const result =  await this.cartRepository.addTocart(item);
+      return res.status(200).send(result);
     } catch (err) {
       console.log("Add cart error");
-      next(err);
+      return res.status(404).send(err.message);
     }
-  }
+  };
 
-  deleteCart(req, res, next) {
+  deleteCart = async (req, res, next) => {
     try {
       const id = req.params.id;
       const userId = req.userId;
-      const result = CartModel.deleteFromCart(userId, id);
+      const result = await this.cartRepository.deleteFromCart(userId, id);
 
       res.status(200).send(result);
     } catch (err) {
       console.log("Delete cart error");
-      next(err);
+      return res.status(404).send(err.message);
     }
-  }
+  };
 }

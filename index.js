@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import productRouter from "./src/features/product/product.routes.js";
 import userRouter from "./src/features/user/user.routes.js";
@@ -9,11 +10,11 @@ import loggerMiddleware from "./src/middlewares/logs.middleware.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { ApplicationError } from "./src/middlewares/applicationError.middleware.js";
+import ApplicationError from "./src/middlewares/applicationError.middleware.js";
 import winston from "winston";
-import {connectToMongoDB} from "./src/config/mongodb.js";
-
-dotenv.config();
+// import {connectToMongoDB} from "./src/config/mongodb.js";
+import { connectUsingMongoose } from "./src/config/mongoose.config.js";
+import orderRouter from "./src/features/order/order.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,6 +33,7 @@ app.use("/api-docs", swagger.serve, swagger.setup(apiDocs));
 app.use("/api/products", productRouter);
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/order",orderRouter);
 
 // Default route
 app.get("/", (req, res) => {
@@ -69,5 +71,6 @@ app.use((err, req, res, next) => {
 
 app.listen(3000, () => {
   console.log("App is listening on 3000");
-  connectToMongoDB();
+  // connectToMongoDB();
+  connectUsingMongoose();
 });

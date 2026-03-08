@@ -8,14 +8,22 @@ const productRouter = express.Router();
 
 const productController = new ProductController();
 
-productRouter.post('/rate',jwtAuth,productController.postRateProduct);
+productRouter.post('/rate',jwtAuth,(req,res)=>{
+    productController.postRateProduct(req,res);
+});
 //localhost:3000/api/products/filter?minPrice=10&maxPrice=20&category=Clothes
-productRouter.get("/filter", jwtAuth,productController.filterProduct);
+productRouter.get("/filter", jwtAuth,(req,res)=>{productController.filterProduct(req,res)});
 //All the paths to controller methods.
 //localhost:3000/api/products
-productRouter.get("/", jwtAuth,productController.getAllProducts);
-productRouter.get("/:id",jwtAuth,productController.getOneProduct);
-productRouter.post("/",jwtAuth, uploadFile.single("imgUrl"), productController.addProduct);
+productRouter.get("/", jwtAuth,(req,res)=>{
+    productController.getAllProducts(req,res)
+});
+productRouter.get("/:id",jwtAuth,(req,res)=>{
+    productController.getOneProduct(req,res);
+});
+productRouter.post("/",jwtAuth, uploadFile.single("imgUrl"),(req,res)=>{
+    productController.addProduct(req,res);
+} );
 
 
 
